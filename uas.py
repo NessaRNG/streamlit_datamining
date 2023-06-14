@@ -1,20 +1,37 @@
 import streamlit as st
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
 
-# Fungsi untuk melakukan perhitungan prediksi diabetes
-def predict_diabetes(gender, age, hypertension, heart_disease, bmi, hba1c_level, blood_glucose_level):
-    # Kriteria medis untuk prediksi diabetes
-    if gender == "Pria" and age > 40 and hypertension == "Ya" and heart_disease == "Ya":
-        return "Risiko Tinggi"
-    elif gender == "Wanita" and age > 50 and hypertension == "Ya" and heart_disease == "Ya":
-        return "Risiko Tinggi"
-    elif bmi >= 30:
-        return "Risiko Tinggi"
-    elif hba1c_level >= 6.5:
-        return "Risiko Tinggi"
-    elif blood_glucose_level >= 200:
-        return "Risiko Tinggi"
-    else:
-        return "Risiko Rendah"
+# Fungsi untuk melakukan pelatihan model Naive Bayes
+def train_model():
+    # Membaca dataset diabetes (contoh: diabetes.csv)
+    df = pd.read_csv("diabetes.csv")
+
+    # Membagi dataset menjadi fitur dan target
+    X = df.drop("diabetes", axis=1)
+    y = df["diabetes"]
+
+    # Membagi data menjadi data pelatihan dan data pengujian
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Membuat dan melatih model Naive Bayes
+    model = GaussianNB()
+    model.fit(X_train, y_train)
+
+    # Memprediksi label pada data pengujian
+    y_pred = model.predict(X_test)
+
+    # Menghitung akurasi model
+    accuracy = accuracy_score(y_test, y_pred)
+
+    return model, accuracy
+
+# Fungsi untuk melakukan prediksi diabetes menggunakan model yang telah dilatih
+def predict_diabetes(model, data):
+    prediction = model.predict([data])
+    return prediction[0]
 
 # Tampilan aplikasi web
 def main():
@@ -31,12 +48,39 @@ def main():
 
     # Tombol untuk memulai perhitungan
     if st.button("Hitung"):
-        result = predict_diabetes(gender, age, hypertension, heart_disease, bmi, hba1c_level, blood_glucose_level)
-        
-        if result == "Risiko Rendah":
+        # Memuat model yang telah dilatih dan akurasinya
+        model, accuracy = train_model()
+
+        # Membentuk data pengujian berdasarkan input pengguna
+        data = [age, bmi, hba1c_level, blood_glucose_level]
+
+        # Mengubah input kategorikal menjadi numerikal
+        if gender == "Pria":
+            data.append(0)
+        else:
+            data.append(1)
+
+        if hypertension == "Tidak":
+            data.append(0)
+        else:
+            data.append(1)
+
+        if heart_disease == "Tidak":
+            data.append(0)
+        else:
+            data.append(1)
+
+        # Melakukan prediksi diabetes menggunakan model yang telah dilatih
+        prediction = predict_diabetes(model, data)
+
+        # Menampilkan hasil prediksi
+        if prediction == 0:
             st.success("Hasil Prediksi: Risiko Rendah")
         else:
             st.error("Hasil Prediksi: Risiko Tinggi")
+
+        # Menampilkan akurasi model yang telah dilatih
+        st.info("Akurasi Model: {:.2f}%".format(accuracy * 100))
 
 if __name__ == "__main__":
     main()
