@@ -2,15 +2,19 @@ import streamlit as st
 
 # Fungsi untuk melakukan perhitungan prediksi diabetes
 def predict_diabetes(gender, age, hypertension, heart_disease, bmi, hba1c_level, blood_glucose_level):
-    # Di sini Anda dapat menggantikan bagian ini dengan pemodelan yang sesuai
-    # Misalnya, jika Anda menggunakan model scikit-learn, Anda dapat memuatnya dan memanggil metode predict
-    # Dalam contoh ini, saya hanya mengembalikan "Risiko Tinggi" untuk semua prediksi
-    
-    # Contoh sederhana untuk membedakan risiko tinggi dan rendah berdasarkan usia
-    if age < 30:
-        return "Risiko Rendah"
-    else:
+    # Kriteria medis untuk prediksi diabetes
+    if gender == "Pria" and age > 40 and hypertension == "Ya" and heart_disease == "Ya":
         return "Risiko Tinggi"
+    elif gender == "Wanita" and age > 50 and hypertension == "Ya" and heart_disease == "Ya":
+        return "Risiko Tinggi"
+    elif bmi >= 30:
+        return "Risiko Tinggi"
+    elif hba1c_level >= 6.5:
+        return "Risiko Tinggi"
+    elif blood_glucose_level >= 200:
+        return "Risiko Tinggi"
+    else:
+        return "Risiko Rendah"
 
 # Tampilan aplikasi web
 def main():
