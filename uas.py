@@ -5,7 +5,12 @@ def predict_diabetes(gender, age, hypertension, heart_disease, bmi, hba1c_level,
     # Di sini Anda dapat menggantikan bagian ini dengan pemodelan yang sesuai
     # Misalnya, jika Anda menggunakan model scikit-learn, Anda dapat memuatnya dan memanggil metode predict
     # Dalam contoh ini, saya hanya mengembalikan "Risiko Tinggi" untuk semua prediksi
-    return "Risiko Tinggi"
+    
+    # Contoh sederhana untuk membedakan risiko tinggi dan rendah berdasarkan usia
+    if age < 30:
+        return "Risiko Rendah"
+    else:
+        return "Risiko Tinggi"
 
 # Tampilan aplikasi web
 def main():
@@ -23,7 +28,11 @@ def main():
     # Tombol untuk memulai perhitungan
     if st.button("Hitung"):
         result = predict_diabetes(gender, age, hypertension, heart_disease, bmi, hba1c_level, blood_glucose_level)
-        st.success("Hasil Prediksi: {}".format(result))
+        
+        if result == "Risiko Rendah":
+            st.success("Hasil Prediksi: Risiko Rendah")
+        else:
+            st.error("Hasil Prediksi: Risiko Tinggi")
 
 if __name__ == "__main__":
     main()
