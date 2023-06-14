@@ -7,7 +7,7 @@ from sklearn.metrics import accuracy_score
 # Fungsi untuk melakukan pelatihan model Naive Bayes
 def train_model():
     # Membaca dataset diabetes (contoh: diabetes.csv)
-    df = pd.read_csv("diabetes.csv")
+    df = pd.read_csv("https://raw.githubusercontent.com/NessaRNG/DataMining/main/TugasPendat/diabetes_dataset.csv")
 
     # Membagi dataset menjadi fitur dan target
     X = df.drop("diabetes", axis=1)
